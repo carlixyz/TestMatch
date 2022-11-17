@@ -7,7 +7,7 @@
 #include "../Structs/FriendStatus.h"
 #include "SocialComponent.generated.h"
 
-DECLARE_DYNAMIC_DELEGATE_OneParam(FOnDataUpdate, FString, textData);
+DECLARE_DYNAMIC_DELEGATE_OneParam(FOnDataSync, FString, textData);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class TESTMATCH_API USocialComponent : public UActorComponent
@@ -18,15 +18,15 @@ public:
 	USocialComponent();
 
 	UFUNCTION()
-	TArray<class UFriendData*> RequestInitialData();
+	TArray<class UFriendData*> GetInitialFriendData();
 
 	/// Get's called everytime Services Get a change in our friends Status
 	UFUNCTION()
-	void UpdateData(TArray<FFriendStatus>& friendStats);
+	void SyncData(TArray<FFriendStatus>& friendStats);
 
-	/// Calls all the Widgets to update Info
+	/// Notify all  Widgets to update Info
 	UPROPERTY()
-	FOnDataUpdate NotifyDataUpdate;
+	FOnDataSync NotifyDataSync;
 
 protected:
 	virtual void BeginPlay() override;

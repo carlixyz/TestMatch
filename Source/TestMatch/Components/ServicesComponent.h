@@ -16,13 +16,14 @@ class TESTMATCH_API UServicesComponent : public UActorComponent
 public:
 	UServicesComponent();
 
-	TArray<FFriendStatus>& ProvideInitialFriendData();
+	class UDataTable* LoadTableRefFromPath(const FName& Path);
+
+	TArray<FFriendStatus>& RequestFriendsData();
 
 	/// Everytime We have a change this is Notified abroad
 	UPROPERTY(BlueprintAssignable, Category = EventDispatcher)
 	FOnDataChange NotifyDataChange;
 
-	class UDataTable* LoadTableRefFromPath(const FName& Path);
 
 private:
 	UPROPERTY(EditAnywhere, Category = DataBase)
@@ -30,12 +31,14 @@ private:
 
 	TArray<FFriendStatus> FriendProfiles;
 
-	/// This Simulates all the random changes inside the DataTable
+	/// This Simulates any random change inside the DataTable
 	UFUNCTION()
 	void ChangeRandomData();
 
 protected:
 	virtual void BeginPlay() override;
+
+	TArray<FFriendStatus> ProcessFriendsRawDataTable(UDataTable* friendDataTable);
 
 	FTimerHandle AutoUpdateTimer;
 

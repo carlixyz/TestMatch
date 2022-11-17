@@ -12,11 +12,9 @@ class TESTMATCH_API USocialOverlay : public UUserWidget
 	GENERATED_BODY()
 	
 	UPROPERTY()
-	class APlayerController* OwningPlayer;
+	class ATestMatchPlayerController* OwningPlayer;
 
 public:
-	virtual void NativeConstruct() override;
-
 	virtual void NativeOnInitialized() override; 	
 	
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
@@ -34,25 +32,18 @@ public:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
 	UButton* ToggleOfflineButton;
 
-
 	UFUNCTION()
-	void InitDataLists();
-
-	UFUNCTION()
-	void UpdateWidgets(FString text);
-	
-	UFUNCTION()
-	void SetDisplayText(FString textToDisplay);
+	void UpdateFriendWidgets(FString text);
 
 private:
 
-	void UpdateOnlineList();
+	UFUNCTION()
+	void InitListViewData(TArray<class UFriendData*> friendsDataList);
 
-	void UpdateOfflineList();
+	void SetFriendItem( UFriendData* friendItem);
 
-	void SetFriendOnline(UObject* friendItem);
-
-	void SetFriendOffline(UObject* friendItem);
+	UFUNCTION()
+	void SetDisplayText(FString textToDisplay);
 
 	UFUNCTION()
 	void ToggleOnlineListVisibility();

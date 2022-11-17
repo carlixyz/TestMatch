@@ -20,44 +20,6 @@ UServicesComponent::UServicesComponent()
 	}
 }
 
-void UServicesComponent::BeginPlay()
-{
-	Super::BeginPlay();
-
-	if (FriendsTable == nullptr && GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, "Error Empty DataTable, Set one on Services");
-		return;
-	}
-
-	/// First-time Parse DataTable & load into local Array
-	TArray<FName> rowNames = FriendsTable->GetRowNames();
-	for (FName rowName : rowNames)
-	{
-		/// Build up a friends Array for easier manipulation
-		FFriendStatus* Item = FriendsTable->FindRow<FFriendStatus>(rowName, "");
-		if (Item)
-			FriendProfiles.Add(*Item);
-
-		//if (GEngine)
-		//{
-		////	int32 printIndex = FriendProfiles.Num() -1;
-		//	GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Purple, rowName.ToString());
-		//	//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Purple, FriendProfiles[printIndex].NickName);
-		//}
-	}
-
-	/// Notify all PlayerControllers 
-	NotifyDataChange.Broadcast(FriendProfiles);
-
-	// ...
-	GetWorld()->GetTimerManager().SetTimer(AutoUpdateTimer,
-										   this,
-										   &UServicesComponent::ChangeRandomData,
-										   AutoUpdateDelay,
-										   false);
-}
-
 UDataTable* UServicesComponent::LoadTableRefFromPath(const FName& path)
 {
 	if (path == NAME_None)
@@ -72,7 +34,52 @@ UDataTable* UServicesComponent::LoadTableRefFromPath(const FName& path)
 	return Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), NULL, *path.ToString()));
 }
 
-TArray<FFriendStatus>& UServicesComponent::ProvideInitialFriendData()
+void UServicesComponent::BeginPlay()
+{
+	Super::BeginPlay();
+
+	/// Keep on a local array for handling random connection events
+	FriendProfiles = ProcessFriendsRawDataTable(FriendsTable);
+
+	/// Notify all PlayerControllers 
+	//NotifyDataChange.Broadcast(FriendProfiles);
+
+	/// We don't need a Tick function but a timer loop instead ...
+	GetWorld()->GetTimerManager().SetTimer(AutoUpdateTimer,
+										   this,
+										   &UServicesComponent::ChangeRandomData,
+										   AutoUpdateDelay,
+										   false);
+}
+
+TArray<FFriendStatus> UServicesComponent::ProcessFriendsRawDataTable(UDataTable* friendsDataTable)
+{
+	if (friendsDataTable == nullptr && GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1,
+										 15, 
+										 FColor::Red, 
+										 "Error Empty DataTable, Setup one on Services" );
+		return TArray<FFriendStatus>();
+	}
+
+	/// First-time Parse DataTable & load into a local Array for convenience
+	TArray<FName> rowNames = friendsDataTable->GetRowNames();
+	TArray<FFriendStatus> friendsProfileStatus;
+
+	for (FName rowName : rowNames)
+	{
+		/// Build up a friends Array for easier manipulation
+		FFriendStatus* Item = friendsDataTable->FindRow<FFriendStatus>(rowName, "");
+		if (Item)
+			friendsProfileStatus.Add(*Item);
+	}
+
+	return friendsProfileStatus;
+}
+
+
+TArray<FFriendStatus>& UServicesComponent::RequestFriendsData()
 {
 	return FriendProfiles;
 }

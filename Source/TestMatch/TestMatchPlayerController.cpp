@@ -60,9 +60,6 @@ void ATestMatchPlayerController::SetupInputComponent()
 
 	// ...
 
-
-//CallUpdate
-
 	InputComponent->BindAction("CallUpdate", IE_Pressed, this, &ATestMatchPlayerController::OnUpdateCalled);
 
 	InputComponent->BindAction("SetDestination", IE_Pressed, this, &ATestMatchPlayerController::OnSetDestinationPressed);
@@ -118,7 +115,7 @@ void ATestMatchPlayerController::OnUpdateCalled()
 {
 
 	FString text = { "UPDATED TEXT!" };
-	Social->NotifyDataUpdate.ExecuteIfBound(text);
+	Social->NotifyDataSync.ExecuteIfBound(text);
 	//Social->NotifyDataUpdate.Broadcast(text);
 
 }

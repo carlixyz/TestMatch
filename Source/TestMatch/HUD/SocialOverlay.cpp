@@ -10,80 +10,54 @@
 #include "Components/ListView.h"
 #include "Components/Button.h"
 
-void USocialOverlay::NativeConstruct()
-{
-	Super::NativeConstruct();
-
-
-	InitDataLists();
-
-}
-
 void USocialOverlay::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
-	OwningPlayer = GetOwningPlayer<APlayerController>(); // GetOwningPlayer<ATestMatchPlayerController>();
+	OwningPlayer = Cast<ATestMatchPlayerController>(GetOwningPlayer<APlayerController>());
 
 	if (InfoText && OwningPlayer)
 	{
 		/// Link with PlayerController' SocialComponent Notifies...
-		ATestMatchPlayerController* playerController = Cast<ATestMatchPlayerController>(OwningPlayer);
-		if (playerController && playerController->Social)
+		if (OwningPlayer && OwningPlayer->Social)
 		{
-			/// Retrieve the PlayerController To request the DataTable
-			playerController->Social->NotifyDataUpdate.BindUFunction(this, "UpdateWidget");
-			//playerController->Social->NotifyDataUpdate.BindUFunction(this, &USocialOverlay::UpdateWidget);
+			/// Retrieve the PlayerController To request all friends Profile Data
+			InitListViewData( OwningPlayer->Social->GetInitialFriendData());
 
-			UpdateWidgets(FString("PLAYER CONTROLLER FOUND"));
+			/// Bind some Notifiers to keep track of any sudden connection
+			OwningPlayer->Social->NotifyDataSync.BindUFunction(this, "UpdateFriendWidgets");
+			//OwningPlayer->Social->NotifyDataUpdate.BindUFunction(this, &USocialOverlay::UpdateWidget);
+
+			UpdateFriendWidgets(FString("PLAYER CONTROLLER FOUND"));
 		}
 	}
 
 }
 
-void USocialOverlay::InitDataLists()
+void USocialOverlay::InitListViewData(TArray<UFriendData*> friendsDataList)
 {
-	/// Should Request to SocialComponent Data
-	// playerController->Social.RequestInitialData(); 
-
-	TArray<class UFriendData*> FriendDataExamples;
-
-	for (int i = 0; i < 3; i++)
-	{
-		UFriendData* fData = NewObject<UFriendData>();
-		fData->ProfileStatus.NickName = FString("Charlie");
-		FriendDataExamples.Add(fData);
-	}
-
-	if (OnlineList)
+	if (OnlineList && OfflineList)
 	{
 		OnlineList->ClearListItems();
-		OnlineList->SetListItems(FriendDataExamples);
-		ToggleOnlineButton->OnClicked.AddDynamic(this, &USocialOverlay::ToggleOnlineListVisibility);
-	}
-
-	if (OfflineList)
-	{
 		OfflineList->ClearListItems();
+
+		for (auto friendProfile : friendsDataList)
+			SetFriendItem(friendProfile);				/// Add each friend item
+
+		ToggleOnlineButton->OnClicked.AddDynamic(this, &USocialOverlay::ToggleOnlineListVisibility);
 		ToggleOfflineButton->OnClicked.AddDynamic(this, &USocialOverlay::ToggleOfflineListVisibility);
 	}
-
 }
 
-void USocialOverlay::UpdateWidgets(FString text)
+void USocialOverlay::UpdateFriendWidgets(FString text)
 {
 	/// Check & Refresh all widget displayed information
-
-
 	SetDisplayText(text);
 
 
 	/// Update Lists regarding connection status
+	//UpdateFriendLists();
 
-
-	UpdateOnlineList();
-
-	UpdateOfflineList();
 }
 
 void USocialOverlay::SetDisplayText(FString textToDisplay)
@@ -94,32 +68,26 @@ void USocialOverlay::SetDisplayText(FString textToDisplay)
 	}
 }
 
-void USocialOverlay::UpdateOnlineList()
+void USocialOverlay::SetFriendItem(UFriendData* friendItem)
 {
+	if (friendItem == nullptr) return;
 
-}
+	if (friendItem->ProfileStatus.bIsConnected)			/// Set Friend Online
+	{
+		if (OnlineList->GetListItems().Contains(friendItem))
+			return;
 
-void USocialOverlay::UpdateOfflineList()
-{
+		OnlineList->AddItem(friendItem);
+		OfflineList->RemoveItem(friendItem);
+	}
+	else												/// Set Friend Offline
+	{
+		if (OfflineList->GetListItems().Contains(friendItem))
+			return;
 
-}
-
-void USocialOverlay::SetFriendOnline(UObject* friendItem)
-{
-	if (OnlineList->GetListItems().Contains(friendItem))
-		return;
-
-	OnlineList->AddItem(friendItem);
-	OfflineList->RemoveItem(friendItem);
-}
-
-void USocialOverlay::SetFriendOffline(UObject* friendItem)
-{
-	if (OfflineList->GetListItems().Contains(friendItem))
-		return;
-
-	OnlineList->RemoveItem(friendItem);
-	OfflineList->AddItem(friendItem);
+		OnlineList->RemoveItem(friendItem);
+		OfflineList->AddItem(friendItem);
+	}
 }
 
 void USocialOverlay::ToggleOnlineListVisibility()
@@ -128,14 +96,13 @@ void USocialOverlay::ToggleOnlineListVisibility()
 
 	switch (OnlineList->GetVisibility())
 	{
-		case ESlateVisibility::Visible:
-			OnlineList->SetVisibility(ESlateVisibility::Hidden);
-			break;
-		case ESlateVisibility::Hidden:
-			OnlineList->SetVisibility(ESlateVisibility::Visible);
-			break;
+	case ESlateVisibility::Visible:
+		OnlineList->SetVisibility(ESlateVisibility::Collapsed);
+		break;
+	case ESlateVisibility::Collapsed:
+		OnlineList->SetVisibility(ESlateVisibility::Visible);
+		break;
 	}
-	//UE_LOG(LogTemp, Warning, TEXT("Button Clicked"));
 }
 
 void USocialOverlay::ToggleOfflineListVisibility()
@@ -144,11 +111,17 @@ void USocialOverlay::ToggleOfflineListVisibility()
 
 	switch (OfflineList->GetVisibility())
 	{
-	case ESlateVisibility::Visible:
-		OfflineList->SetVisibility(ESlateVisibility::Hidden);
+		case ESlateVisibility::Visible:
+		{
+			OfflineList->SetVisibility(ESlateVisibility::Collapsed);
+		}
 		break;
-	case ESlateVisibility::Hidden:
-		OfflineList->SetVisibility(ESlateVisibility::Visible);
+
+		case ESlateVisibility::Collapsed:
+		{
+			OfflineList->SetVisibility(ESlateVisibility::Visible);
+		}
 		break;
 	}
+
 }

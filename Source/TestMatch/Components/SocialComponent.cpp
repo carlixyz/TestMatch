@@ -20,32 +20,46 @@ void USocialComponent::BeginPlay()
 
 	/// Link with GameMode' Services Comp Notifies...
 	ATestMatchGameMode* ATMGameMode =
-		Cast<ATestMatchGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+		Cast<ATestMatchGameMode>( UGameplayStatics::GetGameMode(GetWorld()) );
 
-	if (ATMGameMode)
+	if (ATMGameMode && ATMGameMode->Services)
 	{
-		ATMGameMode->Services->NotifyDataChange.AddDynamic(this, &USocialComponent::UpdateData);
+		FriendDataProfiles.Empty();
+		
+		TArray<FFriendStatus>& friendStatus = ATMGameMode->Services->RequestFriendsData();
+		for (FFriendStatus fStats : friendStatus)
+		{
+			UFriendData* friendDataObject = NewObject<UFriendData>();
+			friendDataObject->ProfileStatus = fStats;
+			FriendDataProfiles.Add(friendDataObject);
+		}
+
+		ATMGameMode->Services->NotifyDataChange.AddDynamic(this, &USocialComponent::SyncData);
+	}
+}
+
+TArray<UFriendData*> USocialComponent::GetInitialFriendData()
+{
+	/// Retrieve here all Friends profiles from Services 
+	if (FriendDataProfiles.IsEmpty() && GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1,
+										 15,
+										 FColor::Red,
+										 "Friends Status array is empty due connection error, Check on Services");
 	}
 
-}
-
-TArray<UFriendData*> USocialComponent::RequestInitialData()
-{
-	TArray<UFriendData*> friendsData;
-	/// Retrieve here all Friends profiles from Services 
-	// ATMGameMode->Services->ProvideInitialFriendData();
-	// ...
-	return friendsData;
+	return FriendDataProfiles;
 }
 
 
-void USocialComponent::UpdateData(TArray<FFriendStatus>& friendStats) // Struct Passed by Ref
+void USocialComponent::SyncData(TArray<FFriendStatus>& friendStats) // Struct Passed by Ref
 {
 	bool bStatusChanged = false;
-	int32 friendsCount = FriendDataProfiles.Num();
+	int32 cachedFriendsCount = FriendDataProfiles.Num();
 
-	/// process here all the Profiles Status Info...
-	if (FriendDataProfiles.IsEmpty() || friendsCount != friendStats.Num())
+	/// If there's a huge change on list count, process here all the Profiles Status Info again...
+	if (FriendDataProfiles.IsEmpty() || cachedFriendsCount != friendStats.Num())
 	{
 		/// If First time load Then Copy locally all data...
 		FriendDataProfiles.Empty();
@@ -62,12 +76,12 @@ void USocialComponent::UpdateData(TArray<FFriendStatus>& friendStats) // Struct 
 	}
 	else
 	{
-		for (int i = 0; i < friendsCount; i++)
+		for (int i = 0; i < cachedFriendsCount; i++)
 		{
-			/// If some local friend connection Status differs from Service's one 
+			// If some local friend connection Status differs from Service's one 
 			if (FriendDataProfiles[i]->ProfileStatus.bIsConnected != friendStats[i].bIsConnected)
 			{
-				/// Then Update Connection Status
+				// Then Update Connection Status
 				FriendDataProfiles[i]->ProfileStatus.bIsConnected = friendStats[i].bIsConnected;
 				/// And Notify it
 				bStatusChanged = true;
@@ -87,14 +101,6 @@ void USocialComponent::UpdateData(TArray<FFriendStatus>& friendStats) // Struct 
 	if (bStatusChanged)
 	{
 		FString textData = "friendProfiles Updated!";
-		NotifyDataUpdate.ExecuteIfBound(textData); //NotifyDataUpdate.Broadcast(textData);
+		NotifyDataSync.ExecuteIfBound(textData); //NotifyDataUpdate.Broadcast(textData);
 	}
-	//if (GEngine)
-	//{
-	//	fProfiles[0].NickName = FString("HEY YOU OVERHERE");
-	//	GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Purple, fProfiles[0].NickName);
-	//	FriendProfiles[0].NickName = FString("NEW NICKNAME");
-	//	GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Red, FriendProfiles[0].NickName);
-	//}
-
 }

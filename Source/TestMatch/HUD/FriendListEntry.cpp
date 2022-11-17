@@ -6,8 +6,6 @@
 #include "Components/Border.h"
 #include "../Structs/FriendData.h"
 #include "../Structs/FriendStatus.h"
-//#include "Styling/SlateColor.h"
-//#include "Math/Color.h"
 
 void UFriendListEntry::NativeOnListItemObjectSet(UObject* listItemObject)
 {
@@ -26,6 +24,7 @@ void UFriendListEntry::NativeOnListItemObjectSet(UObject* listItemObject)
 
 		if (itemData->ProfileStatus.bIsConnected)
 		{
+			AvatarImage->SetBrushTintColor(FSlateColor(FLinearColor::White));
 			NickNameText->SetColorAndOpacity(FSlateColor(OnlineColorFont));
 
 			Connection->SetText(FText::FromString("Online"));
@@ -35,6 +34,7 @@ void UFriendListEntry::NativeOnListItemObjectSet(UObject* listItemObject)
 		}
 		else
 		{
+			AvatarImage->SetBrushTintColor(OfflineColorBG);
 			NickNameText->SetColorAndOpacity(FSlateColor(OfflineColorFont));
 
 			Connection->SetText(FText::FromString("Offline"));
