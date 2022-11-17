@@ -12,7 +12,6 @@ USocialComponent::USocialComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 
 	// ...
-
 }
 
 void USocialComponent::BeginPlay()
@@ -25,48 +24,23 @@ void USocialComponent::BeginPlay()
 
 	if (ATMGameMode)
 	{
-		ATMGameMode->Services->NotifyDataChange.AddDynamic(this, &USocialComponent::OnDataChanged);
+		ATMGameMode->Services->NotifyDataChange.AddDynamic(this, &USocialComponent::UpdateData);
 	}
 
 }
 
-void USocialComponent::OnDataChanged(TArray<FFriendStatus>& friendStats) // Struct Passed by Ref
+TArray<UFriendData*> USocialComponent::RequestInitialData()
 {
-	/*
-	int32 friendsCount = FriendProfiles.Num();
+	TArray<UFriendData*> friendsData;
+	/// Retrieve here all Friends profiles from Services 
+	// ATMGameMode->Services->ProvideInitialFriendData();
+	// ...
+	return friendsData;
+}
 
-	/// process here all the DataTable Info...
-	if (FriendProfiles.IsEmpty() || friendsCount != fProfiles.Num())
-	{
-		/// If First time load Then Copy locally all data...
-		FriendProfiles.Empty();
-		FriendProfiles = fProfiles;
 
-		FString textData = "friendProfiles Initialized!";
-		NotifyDataUpdate.ExecuteIfBound(textData); //NotifyDataUpdate.Broadcast(textData);
-	}
-	else
-	{
-		bool bStatusChanged = false;
-		for (int i = 0; i < friendsCount; i++)
-		{
-			/// If some local friend connection Status differs from Service's one 
-			if (FriendProfiles[i].bIsConnected != fProfiles[i].bIsConnected)
-			{
-				FriendProfiles[i].bIsConnected = fProfiles[i].bIsConnected;
-				/// then Notify it
-				bStatusChanged = true;
-			}
-		}
-
-		if (bStatusChanged)
-		{
-			FString textData = "friendProfiles Updated!";
-			NotifyDataUpdate.ExecuteIfBound(textData); //NotifyDataUpdate.Broadcast(textData);
-		}
-	}
-	*/
-
+void USocialComponent::UpdateData(TArray<FFriendStatus>& friendStats) // Struct Passed by Ref
+{
 	bool bStatusChanged = false;
 	int32 friendsCount = FriendDataProfiles.Num();
 
@@ -98,6 +72,7 @@ void USocialComponent::OnDataChanged(TArray<FFriendStatus>& friendStats) // Stru
 				/// And Notify it
 				bStatusChanged = true;
 
+				/// If There's a new friend connected Online Send another Notify for that too.
 				if (FriendDataProfiles[i]->ProfileStatus.bIsConnected && GEngine)
 				{
 					GEngine->AddOnScreenDebugMessage(-1, 20, FColor::Green,

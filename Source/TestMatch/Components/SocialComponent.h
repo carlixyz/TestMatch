@@ -17,9 +17,12 @@ class TESTMATCH_API USocialComponent : public UActorComponent
 public:	
 	USocialComponent();
 
+	UFUNCTION()
+	TArray<class UFriendData*> RequestInitialData();
+
 	/// Get's called everytime Services Get a change in our friends Status
 	UFUNCTION()
-	void OnDataChanged(TArray<FFriendStatus>& friendStats);
+	void UpdateData(TArray<FFriendStatus>& friendStats);
 
 	/// Calls all the Widgets to update Info
 	UPROPERTY()
@@ -31,9 +34,7 @@ protected:
 private:
 
 	/// Friend List Local copy Handling Here
-	//TArray<FFriendStatus> FriendProfiles;
-
 	UPROPERTY(VisibleAnywhere)
-	TArray<class UFriendData*> FriendDataProfiles;
+	TArray<UFriendData*> FriendDataProfiles;
 
 };

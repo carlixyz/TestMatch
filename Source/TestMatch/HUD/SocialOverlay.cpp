@@ -2,12 +2,22 @@
 
 
 #include "SocialOverlay.h"
-#include "../TestMatchPlayerController.h"	//#include "GameFramework/PlayerController.h"
+#include "../TestMatchPlayerController.h"
 #include "../Components/SocialComponent.h"
 #include "../Structs/FriendStatus.h"
+#include "../Structs/FriendData.h"
 #include "Components/TextBlock.h"
 #include "Components/ListView.h"
+#include "Components/Button.h"
 
+void USocialOverlay::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+
+	InitDataLists();
+
+}
 
 void USocialOverlay::NativeOnInitialized()
 {
@@ -17,8 +27,6 @@ void USocialOverlay::NativeOnInitialized()
 
 	if (InfoText && OwningPlayer)
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("OnInitialized message"));
-
 		/// Link with PlayerController' SocialComponent Notifies...
 		ATestMatchPlayerController* playerController = Cast<ATestMatchPlayerController>(OwningPlayer);
 		if (playerController && playerController->Social)
@@ -27,12 +35,37 @@ void USocialOverlay::NativeOnInitialized()
 			playerController->Social->NotifyDataUpdate.BindUFunction(this, "UpdateWidget");
 			//playerController->Social->NotifyDataUpdate.BindUFunction(this, &USocialOverlay::UpdateWidget);
 
-			UpdateWidgets( FString("PLAYER CONTROLLER FOUND"));
-
-			//if(FriendOnlineEntryClass)
-			//	NewObject<FriendOnlineEntryClass>()
-
+			UpdateWidgets(FString("PLAYER CONTROLLER FOUND"));
 		}
+	}
+
+}
+
+void USocialOverlay::InitDataLists()
+{
+	/// Should Request to SocialComponent Data
+	// playerController->Social.RequestInitialData(); 
+
+	TArray<class UFriendData*> FriendDataExamples;
+
+	for (int i = 0; i < 3; i++)
+	{
+		UFriendData* fData = NewObject<UFriendData>();
+		fData->ProfileStatus.NickName = FString("Charlie");
+		FriendDataExamples.Add(fData);
+	}
+
+	if (OnlineList)
+	{
+		OnlineList->ClearListItems();
+		OnlineList->SetListItems(FriendDataExamples);
+		ToggleOnlineButton->OnClicked.AddDynamic(this, &USocialOverlay::ToggleOnlineListVisibility);
+	}
+
+	if (OfflineList)
+	{
+		OfflineList->ClearListItems();
+		ToggleOfflineButton->OnClicked.AddDynamic(this, &USocialOverlay::ToggleOfflineListVisibility);
 	}
 
 }
@@ -87,4 +120,35 @@ void USocialOverlay::SetFriendOffline(UObject* friendItem)
 
 	OnlineList->RemoveItem(friendItem);
 	OfflineList->AddItem(friendItem);
+}
+
+void USocialOverlay::ToggleOnlineListVisibility()
+{
+	if (OnlineList == nullptr) return;
+
+	switch (OnlineList->GetVisibility())
+	{
+		case ESlateVisibility::Visible:
+			OnlineList->SetVisibility(ESlateVisibility::Hidden);
+			break;
+		case ESlateVisibility::Hidden:
+			OnlineList->SetVisibility(ESlateVisibility::Visible);
+			break;
+	}
+	//UE_LOG(LogTemp, Warning, TEXT("Button Clicked"));
+}
+
+void USocialOverlay::ToggleOfflineListVisibility()
+{
+	if (OfflineList == nullptr) return;
+
+	switch (OfflineList->GetVisibility())
+	{
+	case ESlateVisibility::Visible:
+		OfflineList->SetVisibility(ESlateVisibility::Hidden);
+		break;
+	case ESlateVisibility::Hidden:
+		OfflineList->SetVisibility(ESlateVisibility::Visible);
+		break;
+	}
 }

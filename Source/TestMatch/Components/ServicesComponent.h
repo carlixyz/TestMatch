@@ -16,6 +16,8 @@ class TESTMATCH_API UServicesComponent : public UActorComponent
 public:
 	UServicesComponent();
 
+	TArray<FFriendStatus>& ProvideInitialFriendData();
+
 	/// Everytime We have a change this is Notified abroad
 	UPROPERTY(BlueprintAssignable, Category = EventDispatcher)
 	FOnDataChange NotifyDataChange;
@@ -39,5 +41,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float AutoUpdateDelay = 3.0f;
+
+	int32 LastRandomIndex = 0;
 		
 };

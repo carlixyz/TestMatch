@@ -31,10 +31,10 @@ Developed with Unreal Engine 5
 	* (Widget Logic (DataTable query) **12H.**
 
 
- - [ ] 4> Add the fold/unfold Feature for each list with the proper button control. **6h.**
+ - [x] 4> ~~Add the fold/unfold Feature for each list with the proper button control. **6h.**~~
 
 
- - [ ] 5> Create Timer Simulation. Randomly Update Source table  with Friends  availability & Notify Our Controller class **12H.**
+ - [x] 5> ~~Create Timer Simulation. Randomly Update Source table  with Friends  availability & Notify Our Controller class **12H.**~~
 
 
   - [ ] 6> Create Toast Widget, which pops up when a friend gets connected & fade out after a while. **9H.**
@@ -59,6 +59,6 @@ Developed with Unreal Engine 5
 - [ ] 11> Make sure that key parts are handled on native side C++ and expose events to BP’s to handle tasks that technical artist should work later. **6~12H?**
 
 
-- [ ] 12> Avoid direct View – model   communication skipping the control class.
+- [ ] 12> Avoid direct View – model communication skipping the control class.
 
 

@@ -72,6 +72,11 @@ UDataTable* UServicesComponent::LoadTableRefFromPath(const FName& path)
 	return Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), NULL, *path.ToString()));
 }
 
+TArray<FFriendStatus>& UServicesComponent::ProvideInitialFriendData()
+{
+	return FriendProfiles;
+}
+
 void UServicesComponent::ChangeRandomData()
 {
 	/// Choose Randomly an user & toggle it's connection Status
@@ -80,6 +85,11 @@ void UServicesComponent::ChangeRandomData()
 	if (friendsCount > 0)
 	{
 		int32 randomIndex = FMath::RandRange(0, friendsCount - 1);
+		if (randomIndex == LastRandomIndex)
+		{
+			FMath::RandInit(FMath::GetRandSeed() - FMath::RandRange(0, 10000000));
+			randomIndex = FMath::RandRange(0, friendsCount - 1);
+		}
 
 		/// Toggle connection Status
 		FriendProfiles[randomIndex].bIsConnected = !FriendProfiles[randomIndex].bIsConnected;
@@ -87,6 +97,7 @@ void UServicesComponent::ChangeRandomData()
 		/// Notify all PlayerControllers about the new state
 		NotifyDataChange.Broadcast(FriendProfiles);
 
+		LastRandomIndex = randomIndex;
 		//GEngine->AddOnScreenDebugMessage(-1, 15, FColor::Green, "NotifyDataChange.Broadcast(FriendProfiles);");
 	}
 
