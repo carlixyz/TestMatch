@@ -6,11 +6,13 @@ Using (for now) 3 components:
 * Services: working as component inside GameMode, handle Friends DataTable loading 
 * Social: another component attached to the PlayerController, gets notified via a Service delegate.
 * SocialOverlay: a simple UserWidget inside the ScreenHUD grouping all sub-widgets regarding friends status.
+* If you want a fast population of the initial friends list uncomment the line 28 in SocialComponent.cpp
 
 ```
-Developed with Unreal Engine 5
+//FriendsDataCache = ReFillDataCache(ATMGameMode->Services->ProvideFriendsData());
 ```
 
+###Developed with Unreal Engine 5
 ------------
 
 ### Tasks Breakdown
@@ -26,9 +28,9 @@ Developed with Unreal Engine 5
 - ~~consider inside PlayerController, GameInstance or using a GameState Component as a better option (Need some research to grasp it) **+6H.**~~
 
 
- - [ ] 3> ~~(Un)Connected Lists Widget Creation.~~
+ - [x] 3> ~~(Un)Connected Lists Widget Creation.~~
 	* ~~Widget Skeleton **6H.**~~
-	* (Widget Logic (DataTable query) **12H.**
+	* ~~(Widget Logic (DataTable query) **12H.**~~
 
 
  - [x] 4> ~~Add the fold/unfold Feature for each list with the proper button control. **6h.**~~
@@ -37,13 +39,13 @@ Developed with Unreal Engine 5
  - [x] 5> ~~Create Timer Simulation. Randomly Update Source table  with Friends  availability & Notify Our Controller class **12H.**~~
 
 
-  - [ ] 6> Create Toast Widget, which pops up when a friend gets connected & fade out after a while. **9H.**
+ - [ ] 6> Create Toast Widget, which pops up when a friend gets connected & fade out after a while. **9H.**
 
 
 - [ ] 7> Create Widget Tooltip showing Friends information when player hovers over the friend list items. **9H**
 
 
-- [ ] 8> Take care of list update everytime friends status change Related with “5” ** 6H.**
+- [x] 8> ~~Take care of list update everytime friends status change Related with “5” ** 6H.**~~
 
 
 - [ ] 9> Create Additional animations to improve user experience.
@@ -59,6 +61,6 @@ Developed with Unreal Engine 5
 - [ ] 11> Make sure that key parts are handled on native side C++ and expose events to BP’s to handle tasks that technical artist should work later. **6~12H?**
 
 
-- [ ] 12> Avoid direct View – model communication skipping the control class.
+- [x] 12> ~~Avoid direct View – model communication skipping the control class.~~
 
 

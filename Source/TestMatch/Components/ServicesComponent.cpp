@@ -41,15 +41,15 @@ void UServicesComponent::BeginPlay()
 	/// Keep on a local array for handling random connection events
 	FriendProfiles = ProcessFriendsRawDataTable(FriendsTable);
 
-	/// Notify all PlayerControllers 
-	//NotifyDataChange.Broadcast(FriendProfiles);
-
 	/// We don't need a Tick function but a timer loop instead ...
 	GetWorld()->GetTimerManager().SetTimer(AutoUpdateTimer,
 										   this,
 										   &UServicesComponent::ChangeRandomData,
 										   AutoUpdateDelay,
 										   false);
+
+	///// Notify all PlayerControllers 
+	//NotifyDataChange.Broadcast(FriendProfiles);
 }
 
 TArray<FFriendStatus> UServicesComponent::ProcessFriendsRawDataTable(UDataTable* friendsDataTable)
@@ -79,7 +79,7 @@ TArray<FFriendStatus> UServicesComponent::ProcessFriendsRawDataTable(UDataTable*
 }
 
 
-TArray<FFriendStatus>& UServicesComponent::RequestFriendsData()
+TArray<FFriendStatus>& UServicesComponent::ProvideFriendsData()
 {
 	return FriendProfiles;
 }

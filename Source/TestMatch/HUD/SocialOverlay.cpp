@@ -22,13 +22,12 @@ void USocialOverlay::NativeOnInitialized()
 		if (OwningPlayer && OwningPlayer->Social)
 		{
 			/// Retrieve the PlayerController To request all friends Profile Data
-			InitListViewData( OwningPlayer->Social->GetInitialFriendData());
+			InitListViewData(OwningPlayer->Social->GetInitialFriendData());
 
 			/// Bind some Notifiers to keep track of any sudden connection
 			OwningPlayer->Social->NotifyDataSync.BindUFunction(this, "UpdateFriendWidgets");
-			//OwningPlayer->Social->NotifyDataUpdate.BindUFunction(this, &USocialOverlay::UpdateWidget);
 
-			UpdateFriendWidgets(FString("PLAYER CONTROLLER FOUND"));
+			//UpdateFriendWidgets(FString("PLAYER CONTROLLER FOUND"));
 		}
 	}
 
@@ -49,15 +48,19 @@ void USocialOverlay::InitListViewData(TArray<UFriendData*> friendsDataList)
 	}
 }
 
-void USocialOverlay::UpdateFriendWidgets(FString text)
+void USocialOverlay::UpdateFriendWidgets(UFriendData* friendsData)
 {
 	/// Check & Refresh all widget displayed information
-	SetDisplayText(text);
 
+
+	/// If There's a new friend connected Online Send another Notify for that too.
+	if (friendsData->ProfileStatus.bIsConnected)
+	{
+		SetDisplayText(  friendsData->ProfileStatus.NickName + FString(" is Online"));
+	}
 
 	/// Update Lists regarding connection status
-	//UpdateFriendLists();
-
+	SetFriendItem(friendsData);
 }
 
 void USocialOverlay::SetDisplayText(FString textToDisplay)
@@ -88,6 +91,18 @@ void USocialOverlay::SetFriendItem(UFriendData* friendItem)
 		OnlineList->RemoveItem(friendItem);
 		OfflineList->AddItem(friendItem);
 	}
+
+	if (OnlineButtonText )
+	{
+		OnlineButtonText->SetText(FText::FromString(
+			FString::Printf(TEXT("Toggle Online Players %d"), OnlineList->GetNumItems()) ));
+	}
+
+	if (OfflineButtonText)
+	{
+		OfflineButtonText->SetText(FText::FromString(
+			FString::Printf(TEXT("Toggle Offline Players %d"), OfflineList->GetNumItems())));
+	}
 }
 
 void USocialOverlay::ToggleOnlineListVisibility()
@@ -112,15 +127,11 @@ void USocialOverlay::ToggleOfflineListVisibility()
 	switch (OfflineList->GetVisibility())
 	{
 		case ESlateVisibility::Visible:
-		{
 			OfflineList->SetVisibility(ESlateVisibility::Collapsed);
-		}
 		break;
 
 		case ESlateVisibility::Collapsed:
-		{
 			OfflineList->SetVisibility(ESlateVisibility::Visible);
-		}
 		break;
 	}
 

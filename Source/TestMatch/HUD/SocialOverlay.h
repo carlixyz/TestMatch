@@ -32,13 +32,19 @@ public:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
 	UButton* ToggleOfflineButton;
 
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+	UTextBlock* OnlineButtonText;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+	UTextBlock* OfflineButtonText;
+
 	UFUNCTION()
-	void UpdateFriendWidgets(FString text);
+	void UpdateFriendWidgets(class UFriendData* friendsData);
 
 private:
 
 	UFUNCTION()
-	void InitListViewData(TArray<class UFriendData*> friendsDataList);
+	void InitListViewData(TArray<UFriendData*> friendsDataList);
 
 	void SetFriendItem( UFriendData* friendItem);
 

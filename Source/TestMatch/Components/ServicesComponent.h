@@ -18,7 +18,7 @@ public:
 
 	class UDataTable* LoadTableRefFromPath(const FName& Path);
 
-	TArray<FFriendStatus>& RequestFriendsData();
+	TArray<FFriendStatus>& ProvideFriendsData();
 
 	/// Everytime We have a change this is Notified abroad
 	UPROPERTY(BlueprintAssignable, Category = EventDispatcher)

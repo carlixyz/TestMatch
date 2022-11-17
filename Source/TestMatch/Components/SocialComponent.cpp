@@ -20,87 +20,75 @@ void USocialComponent::BeginPlay()
 
 	/// Link with GameMode' Services Comp Notifies...
 	ATestMatchGameMode* ATMGameMode =
-		Cast<ATestMatchGameMode>( UGameplayStatics::GetGameMode(GetWorld()) );
+		Cast<ATestMatchGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 
 	if (ATMGameMode && ATMGameMode->Services)
 	{
-		FriendDataProfiles.Empty();
-		
-		TArray<FFriendStatus>& friendStatus = ATMGameMode->Services->RequestFriendsData();
-		for (FFriendStatus fStats : friendStatus)
-		{
-			UFriendData* friendDataObject = NewObject<UFriendData>();
-			friendDataObject->ProfileStatus = fStats;
-			FriendDataProfiles.Add(friendDataObject);
-		}
+		/// This is a shortcut to Fill up quickly the local Data, If you want to use it uncomment
+		//FriendsDataCache = ReFillDataCache(ATMGameMode->Services->ProvideFriendsData());
 
 		ATMGameMode->Services->NotifyDataChange.AddDynamic(this, &USocialComponent::SyncData);
 	}
 }
 
+
+
 TArray<UFriendData*> USocialComponent::GetInitialFriendData()
 {
 	/// Retrieve here all Friends profiles from Services 
-	if (FriendDataProfiles.IsEmpty() && GEngine)
+	if (FriendsDataCache.IsEmpty() && GEngine)
 	{
 		GEngine->AddOnScreenDebugMessage(-1,
 										 15,
 										 FColor::Red,
-										 "Friends Status array is empty due connection error, Check on Services");
+										 "Hold on, Retrieving Friends Status Data from Services");
 	}
 
-	return FriendDataProfiles;
+	return FriendsDataCache;
 }
 
 
+
+TArray<UFriendData*> USocialComponent::ReFillDataCache(TArray<FFriendStatus>& friendStats)
+{
+	TArray<UFriendData*> friendsDataCache;
+
+	for (FFriendStatus fStats : friendStats)
+	{
+		UFriendData* friendDataObject = NewObject<UFriendData>();
+		friendDataObject->ProfileStatus = fStats;
+		friendsDataCache.Add(friendDataObject);
+	}
+
+	return friendsDataCache;
+}
+
 void USocialComponent::SyncData(TArray<FFriendStatus>& friendStats) // Struct Passed by Ref
 {
-	bool bStatusChanged = false;
-	int32 cachedFriendsCount = FriendDataProfiles.Num();
+	int32 cachedFriendsCount = FriendsDataCache.Num();
 
-	/// If there's a huge change on list count, process here all the Profiles Status Info again...
-	if (FriendDataProfiles.IsEmpty() || cachedFriendsCount != friendStats.Num())
+	/// If there's a huge change between lists, SyncUp everything again...
+	if (FriendsDataCache.IsEmpty() || cachedFriendsCount != friendStats.Num())
 	{
+
 		/// If First time load Then Copy locally all data...
-		FriendDataProfiles.Empty();
-
-		/// FriendDataProfiles = fProfiles;
-		for (FFriendStatus fStats : friendStats)
-		{
-			UFriendData* friendDataObject = NewObject<UFriendData>();
-			friendDataObject->ProfileStatus = fStats;
-			FriendDataProfiles.Add(friendDataObject);
-		}
-
-		bStatusChanged = true;
+		//FriendsDataCache.Empty();
+		FriendsDataCache = ReFillDataCache(friendStats);
 	}
 	else
 	{
+		/// Else just keep checking every item status...
 		for (int i = 0; i < cachedFriendsCount; i++)
 		{
 			// If some local friend connection Status differs from Service's one 
-			if (FriendDataProfiles[i]->ProfileStatus.bIsConnected != friendStats[i].bIsConnected)
+			if (FriendsDataCache[i]->ProfileStatus.bIsConnected != friendStats[i].bIsConnected)
 			{
 				// Then Update Connection Status
-				FriendDataProfiles[i]->ProfileStatus.bIsConnected = friendStats[i].bIsConnected;
-				/// And Notify it
-				bStatusChanged = true;
+				FriendsDataCache[i]->ProfileStatus.bIsConnected = friendStats[i].bIsConnected;
 
-				/// If There's a new friend connected Online Send another Notify for that too.
-				if (FriendDataProfiles[i]->ProfileStatus.bIsConnected && GEngine)
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 20, FColor::Green,
-													 FString::Printf(TEXT("%s is Online"),
-													 *FriendDataProfiles[i]->ProfileStatus.FullName.ToString()) );
-				}
+				/// And Notify it
+				NotifyDataSync.ExecuteIfBound(FriendsDataCache[i]); //NotifyDataUpdate.Broadcast(textData);
 			}
 		}
-	}
-	
-
-	if (bStatusChanged)
-	{
-		FString textData = "friendProfiles Updated!";
-		NotifyDataSync.ExecuteIfBound(textData); //NotifyDataUpdate.Broadcast(textData);
 	}
 }

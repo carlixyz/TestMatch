@@ -7,7 +7,7 @@
 #include "../Structs/FriendStatus.h"
 #include "SocialComponent.generated.h"
 
-DECLARE_DYNAMIC_DELEGATE_OneParam(FOnDataSync, FString, textData);
+DECLARE_DYNAMIC_DELEGATE_OneParam(FOnDataSync, class UFriendData*, friendDataUpdated);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class TESTMATCH_API USocialComponent : public UActorComponent
@@ -18,7 +18,7 @@ public:
 	USocialComponent();
 
 	UFUNCTION()
-	TArray<class UFriendData*> GetInitialFriendData();
+	TArray<UFriendData*> GetInitialFriendData();
 
 	/// Get's called everytime Services Get a change in our friends Status
 	UFUNCTION()
@@ -33,8 +33,11 @@ protected:
 
 private:
 
+	/// First Populate our main pool of Friends status entries
+	TArray<UFriendData*> ReFillDataCache(TArray<FFriendStatus>& friendStats);
+
 	/// Friend List Local copy Handling Here
 	UPROPERTY(VisibleAnywhere)
-	TArray<UFriendData*> FriendDataProfiles;
+	TArray<UFriendData*> FriendsDataCache;
 
 };

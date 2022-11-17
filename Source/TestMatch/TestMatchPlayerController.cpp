@@ -60,8 +60,6 @@ void ATestMatchPlayerController::SetupInputComponent()
 
 	// ...
 
-	InputComponent->BindAction("CallUpdate", IE_Pressed, this, &ATestMatchPlayerController::OnUpdateCalled);
-
 	InputComponent->BindAction("SetDestination", IE_Pressed, this, &ATestMatchPlayerController::OnSetDestinationPressed);
 	InputComponent->BindAction("SetDestination", IE_Released, this, &ATestMatchPlayerController::OnSetDestinationReleased);
 
@@ -109,13 +107,4 @@ void ATestMatchPlayerController::OnTouchReleased(const ETouchIndex::Type FingerI
 {
 	bIsTouch = false;
 	OnSetDestinationReleased();
-}
-
-void ATestMatchPlayerController::OnUpdateCalled()
-{
-
-	FString text = { "UPDATED TEXT!" };
-	Social->NotifyDataSync.ExecuteIfBound(text);
-	//Social->NotifyDataUpdate.Broadcast(text);
-
 }
