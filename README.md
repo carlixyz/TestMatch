@@ -39,7 +39,7 @@ Using (for now) 3 components:
  - [x] 5> ~~Create Timer Simulation. Randomly Update Source table  with Friends  availability & Notify Our Controller class **12H.**~~
 
 
- - [ ] 6> Create Toast Widget, which pops up when a friend gets connected & fade out after a while. **9H.**
+ - [x] 6> ~~Create Toast Widget, which pops up when a friend gets connected & fade out after a while. **9H.**~~
 
 
 - [x] 7> ~~Create Widget Tooltip showing Friends information when player hovers over the friend list items. **9H**~~

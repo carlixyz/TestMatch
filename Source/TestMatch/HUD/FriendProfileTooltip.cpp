@@ -17,23 +17,32 @@ void UFriendProfileTooltip::UpdateTooltipData(UFriendData* friendProfile)
 	{
 		auto pStatus = friendProfile->ProfileStatus;
 
-		AvatarPic->SetBrushFromTexture( pStatus.AvatarImage);
+		if (AvatarPic)
+			AvatarPic->SetBrushFromTexture(pStatus.AvatarImage);
 
-		NickName->SetText(FText::FromString( pStatus.NickName));
+		if (NickName)
+			NickName->SetText(FText::FromString(pStatus.NickName));
 
-		FullName->SetText(FText::FromName( pStatus.FullName));
+		if (FullName)
+			FullName->SetText(FText::FromName(pStatus.FullName));
 
-		ConnectStatus->SetText( pStatus.bIsConnected ?
-							   FText::FromString("Online") :
-							   FText::FromString("Offline") );
+		if (ConnectStatus)
+		{
 
-		ConnectStatus->SetColorAndOpacity( FSlateColor(pStatus.bIsConnected ?
-													   FLinearColor::Green :
-													   FLinearColor::Red ) );
+			ConnectStatus->SetText(pStatus.bIsConnected ?
+								   FText::FromString("Online") :
+								   FText::FromString("Offline"));
 
-		Level->SetText( FText::FromString( 
-			FString::Printf( TEXT("Level %d"), pStatus.Level ) ));
+			ConnectStatus->SetColorAndOpacity(FSlateColor(pStatus.bIsConnected ?
+														  FLinearColor::Green :
+														  FLinearColor::Red));
+		}
 
-		LastGame->SetText( FText::FromString(pStatus.LastGamePlayed));
+		if (Level)
+			Level->SetText(FText::FromString(
+				FString::Printf(TEXT("Level %d"), pStatus.Level)));
+
+		if (LastGame)
+			LastGame->SetText(FText::FromString(pStatus.LastGamePlayed));
 	}
 }

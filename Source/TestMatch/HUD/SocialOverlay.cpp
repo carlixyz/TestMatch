@@ -9,6 +9,8 @@
 #include "Components/TextBlock.h"
 #include "Components/ListView.h"
 #include "Components/Button.h"
+#include "Components/VerticalBox.h"
+#include "ToastPopup.h"
 
 void USocialOverlay::NativeOnInitialized()
 {
@@ -16,7 +18,7 @@ void USocialOverlay::NativeOnInitialized()
 
 	OwningPlayer = Cast<ATestMatchPlayerController>(GetOwningPlayer<APlayerController>());
 
-	if (InfoText && OwningPlayer)
+	if (OwningPlayer)
 	{
 		/// Link with PlayerController' SocialComponent Notifies...
 		if (OwningPlayer && OwningPlayer->Social)
@@ -26,11 +28,8 @@ void USocialOverlay::NativeOnInitialized()
 
 			/// Bind some Notifiers to keep track of any sudden connection
 			OwningPlayer->Social->NotifyDataSync.BindUFunction(this, "UpdateFriendWidgets");
-
-			//UpdateFriendWidgets(FString("PLAYER CONTROLLER FOUND"));
 		}
 	}
-
 }
 
 void USocialOverlay::InitListViewData(TArray<UFriendData*> friendsDataList)
@@ -41,37 +40,45 @@ void USocialOverlay::InitListViewData(TArray<UFriendData*> friendsDataList)
 		OfflineList->ClearListItems();
 
 		for (auto friendProfile : friendsDataList)
-			SetFriendItem(friendProfile);				/// Add each friend item
+			SetupFriendItem(friendProfile);				/// Add each friend item
 
 		ToggleOnlineButton->OnClicked.AddDynamic(this, &USocialOverlay::ToggleOnlineListVisibility);
 		ToggleOfflineButton->OnClicked.AddDynamic(this, &USocialOverlay::ToggleOfflineListVisibility);
 	}
 }
 
-void USocialOverlay::UpdateFriendWidgets(UFriendData* friendsData)
+void USocialOverlay::UpdateFriendWidgets(UFriendData* friendData)
 {
 	/// Check & Refresh all widget displayed information
 
 
 	/// If There's a new friend connected Online Send another Notify for that too.
-	if (friendsData->ProfileStatus.bIsConnected)
-	{
-		SetDisplayText(  friendsData->ProfileStatus.NickName + FString(" is Online"));
-	}
+	if (friendData->ProfileStatus.bIsConnected)
+		AnnounceFriendOnline(friendData->ProfileStatus.NickName + FString(" is Online"));
 
 	/// Update Lists regarding connection status
-	SetFriendItem(friendsData);
+	SetupFriendItem(friendData);
 }
 
-void USocialOverlay::SetDisplayText(FString textToDisplay)
+void USocialOverlay::AnnounceFriendOnline(FString textToDisplay)
 {
-	if (InfoText)
+	if (ToastPopupClass && PopupArea)
 	{
-		InfoText->SetText(FText::FromString(textToDisplay));
+		//InfoText->SetText(FText::FromString(textToDisplay));
+		UToastPopup* popup = Cast<UToastPopup>(CreateWidget(this, ToastPopupClass));
+
+		if (popup)
+		{
+			PopupArea->AddChildToVerticalBox(popup);
+			popup->SetupDisplayedName(textToDisplay);
+		}
+
 	}
 }
 
-void USocialOverlay::SetFriendItem(UFriendData* friendItem)
+
+
+void USocialOverlay::SetupFriendItem(UFriendData* friendItem)
 {
 	if (friendItem == nullptr) return;
 

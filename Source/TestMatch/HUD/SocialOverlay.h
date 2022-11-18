@@ -17,8 +17,8 @@ class TESTMATCH_API USocialOverlay : public UUserWidget
 public:
 	virtual void NativeOnInitialized() override; 	
 	
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
-	class UTextBlock* InfoText;
+	//UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+	//class UTextBlock* InfoText;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UListView* OnlineList;
@@ -33,23 +33,28 @@ public:
 	UButton* ToggleOfflineButton;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
-	UTextBlock* OnlineButtonText;
+	class UTextBlock* OnlineButtonText;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
 	UTextBlock* OfflineButtonText;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+	class UVerticalBox* PopupArea;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class UToastPopup> ToastPopupClass;
 
 	UFUNCTION()
 	void UpdateFriendWidgets(class UFriendData* friendsData);
 
 private:
 
-	UFUNCTION()
 	void InitListViewData(TArray<UFriendData*> friendsDataList);
 
-	void SetFriendItem( UFriendData* friendItem);
+	void AnnounceFriendOnline(FString textToDisplay);
 
 	UFUNCTION()
-	void SetDisplayText(FString textToDisplay);
+	void SetupFriendItem(UFriendData* friendItem);
 
 	UFUNCTION()
 	void ToggleOnlineListVisibility();
