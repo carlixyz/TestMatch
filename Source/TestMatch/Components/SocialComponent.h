@@ -9,6 +9,12 @@
 
 DECLARE_DYNAMIC_DELEGATE_OneParam(FOnDataSync, class UFriendData*, friendDataUpdated);
 
+
+/// <summary>
+/// main base CONTROLLER component 
+/// Handles interations between Services and View
+/// M <- [C] -> V
+/// </summary>
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class TESTMATCH_API USocialComponent : public UActorComponent
 {

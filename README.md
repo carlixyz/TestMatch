@@ -49,13 +49,13 @@ Using (for now) 3 components:
 
 
 - [ ] 9> Create Additional animations to improve user experience.
- * Fold/Unfolding.
+ * ~~Fold/Unfolding.~~
  * List fade-in.
  * Toast popup fade in/out.
  * Etc.
 
 
-- [ ] 10> Check the implementation of a local basic pool of widgets in case of not using the listviews. **12H?**
+- [ ] 10> ~~Check the implementation of a local basic pool of widgets in case of not using the listviews. **12H?**~~
 
 
 - [ ] 11> Make sure that key parts are handled on native side C++ and expose events to BP’s to handle tasks that technical artist should work later. **6~12H?**

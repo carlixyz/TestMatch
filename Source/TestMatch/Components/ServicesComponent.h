@@ -9,6 +9,12 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDataChange, TArray<FFriendStatus>&, friendProfiles);
 
+
+/// <summary>
+/// Services MODEL Component
+/// Main Entry point for processing & answer Social controller data requests
+/// [M] <- C -> V
+/// </summary>
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class TESTMATCH_API UServicesComponent : public UActorComponent
 {

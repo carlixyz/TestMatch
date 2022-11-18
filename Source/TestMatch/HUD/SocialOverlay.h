@@ -6,6 +6,11 @@
 #include "Blueprint/UserWidget.h"
 #include "SocialOverlay.generated.h"
 
+/// <summary>
+/// VIEW Displayer
+/// it's in charge of present all the information provided by Social controller
+/// M <- C -> [V]
+/// </summary>
 UCLASS()
 class TESTMATCH_API USocialOverlay : public UUserWidget
 {
