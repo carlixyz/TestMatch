@@ -25,7 +25,7 @@ void USocialComponent::BeginPlay()
 	if (ATMGameMode && ATMGameMode->Services)
 	{
 		/// This is a shortcut to Fill up quickly the local Data, If you want to use it uncomment
-		//FriendsDataCache = ReFillDataCache(ATMGameMode->Services->ProvideFriendsData());
+		FriendsDataCache = ReFillDataCache(ATMGameMode->Services->ProvideFriendsData());
 
 		ATMGameMode->Services->NotifyDataChange.AddDynamic(this, &USocialComponent::SyncData);
 	}

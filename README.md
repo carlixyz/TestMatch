@@ -12,7 +12,7 @@ Using (for now) 3 components:
 //FriendsDataCache = ReFillDataCache(ATMGameMode->Services->ProvideFriendsData());
 ```
 
-###Developed with Unreal Engine 5
+### Developed with Unreal Engine 5
 ------------
 
 ### Tasks Breakdown
@@ -42,7 +42,7 @@ Using (for now) 3 components:
  - [ ] 6> Create Toast Widget, which pops up when a friend gets connected & fade out after a while. **9H.**
 
 
-- [ ] 7> Create Widget Tooltip showing Friends information when player hovers over the friend list items. **9H**
+- [x] 7> ~~Create Widget Tooltip showing Friends information when player hovers over the friend list items. **9H**~~
 
 
 - [x] 8> ~~Take care of list update everytime friends status change Related with “5” ** 6H.**~~

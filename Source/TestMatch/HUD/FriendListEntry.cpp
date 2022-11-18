@@ -6,6 +6,8 @@
 #include "Components/Border.h"
 #include "../Structs/FriendData.h"
 #include "../Structs/FriendStatus.h"
+#include "FriendProfileTooltip.h"
+#include "Components/CanvasPanelSlot.h"
 
 void UFriendListEntry::NativeOnListItemObjectSet(UObject* listItemObject)
 {
@@ -24,24 +26,60 @@ void UFriendListEntry::NativeOnListItemObjectSet(UObject* listItemObject)
 
 		if (itemData->ProfileStatus.bIsConnected)
 		{
-			AvatarImage->SetBrushTintColor(FSlateColor(FLinearColor::White));
-			NickNameText->SetColorAndOpacity(FSlateColor(OnlineColorFont));
-
-			Connection->SetText(FText::FromString("Online"));
-			Connection->SetColorAndOpacity(FSlateColor(OnlineColorFont));
-
-			BorderBG->SetBrushColor(OnlineColorBG);
+			// Set everything to enabled status
+			SetupWidgetOnline();
 		}
 		else
 		{
-			AvatarImage->SetBrushTintColor(OfflineColorBG);
-			NickNameText->SetColorAndOpacity(FSlateColor(OfflineColorFont));
-
-			Connection->SetText(FText::FromString("Offline"));
-			Connection->SetColorAndOpacity(FSlateColor(OfflineColorFont));
-
-			BorderBG->SetBrushColor( OfflineColorBG );
+			// Set everything to disabled status
+			SetupWidgetOffline();
 		}
+
+		CreateTooltipWidget(itemData);
+	}
+}
+
+void UFriendListEntry::SetupWidgetOffline()
+{
+	AvatarImage->SetBrushTintColor(OfflineColorBG);
+	NickNameText->SetColorAndOpacity(FSlateColor(OfflineColorFont));
+
+	Connection->SetText(FText::FromString("Offline"));
+	Connection->SetColorAndOpacity(FSlateColor(OfflineColorFont));
+
+	BorderBG->SetBrushColor(OfflineColorBG);
+}
+
+void UFriendListEntry::SetupWidgetOnline()
+{
+	AvatarImage->SetBrushTintColor(FSlateColor(FLinearColor::White));
+	NickNameText->SetColorAndOpacity(FSlateColor(OnlineColorFont));
+
+	Connection->SetText(FText::FromString("Online"));
+	Connection->SetColorAndOpacity(FSlateColor(OnlineColorFont));
+
+	BorderBG->SetBrushColor(OnlineColorBG);
+}
+
+
+void UFriendListEntry::CreateTooltipWidget(UFriendData* friendData)
+{
+	if (TooltipUIClass != nullptr)
+	{
+		UFriendProfileTooltip* tooltipWidget = Cast<UFriendProfileTooltip>(CreateWidget(this, TooltipUIClass));
+
+		if (tooltipWidget)
+		{
+			ProfileTooltip = tooltipWidget;
+			SetToolTip(ProfileTooltip);
+			ProfileTooltip->UpdateTooltipData(friendData);
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, 
+			   Warning, 
+			   TEXT("No Tooltip widget defined:\n Setup TooltipUIClass inside FriendListEntrty"));
 	}
 }
 

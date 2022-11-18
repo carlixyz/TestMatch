@@ -18,11 +18,21 @@ protected:
 	/// Initialize Class to enable IUserObjectListEntry
 	virtual void NativeOnListItemObjectSet(UObject* listItemObject) override;
 
+	void SetupWidgetOffline();
+
+	void SetupWidgetOnline();
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class UFriendProfileTooltip> TooltipUIClass;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UFriendProfileTooltip* ProfileTooltip;
+
+	void CreateTooltipWidget(class UFriendData* friendData);
 
 	/// Player Avatar Icon ------------------
 	UPROPERTY(meta = (BindWidget))
 	class UImage* AvatarImage;
-
 
 	/// Player NickName ---------------------
 	UPROPERTY(meta = (BindWidget))
@@ -52,5 +62,6 @@ protected:
 	// Displayed Color When player is offline
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FLinearColor OfflineColorBG;
+
 
 };
