@@ -51,7 +51,6 @@ void USocialOverlay::UpdateFriendWidgets(UFriendData* friendData)
 {
 	/// Check & Refresh all widget displayed information
 
-
 	/// If There's a new friend connected Online Send another Notify for that too.
 	if (friendData->ProfileStatus.bIsConnected)
 		AnnounceFriendOnline(friendData->ProfileStatus.NickName + FString(" is Online"));
@@ -64,7 +63,6 @@ void USocialOverlay::AnnounceFriendOnline(FString textToDisplay)
 {
 	if (ToastPopupClass && PopupArea)
 	{
-		//InfoText->SetText(FText::FromString(textToDisplay));
 		UToastPopup* popup = Cast<UToastPopup>(CreateWidget(this, ToastPopupClass));
 
 		if (popup)
@@ -72,7 +70,6 @@ void USocialOverlay::AnnounceFriendOnline(FString textToDisplay)
 			PopupArea->AddChildToVerticalBox(popup);
 			popup->SetupDisplayedName(textToDisplay);
 		}
-
 	}
 }
 

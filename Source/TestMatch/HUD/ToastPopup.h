@@ -13,7 +13,14 @@ UCLASS()
 class TESTMATCH_API UToastPopup : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
+	UPROPERTY( Transient, meta = (BindWidgetAnim))
+	UWidgetAnimation* RevealWindow;
+
+	UPROPERTY( Transient, meta = (BindWidgetAnim))
+	UWidgetAnimation* HideWindow;
+
+
 	UPROPERTY(meta = (BindWidgetOptional))
 	class UTextBlock* AnnounceText;
 

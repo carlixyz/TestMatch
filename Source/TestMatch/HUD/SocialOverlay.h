@@ -21,9 +21,6 @@ class TESTMATCH_API USocialOverlay : public UUserWidget
 
 public:
 	virtual void NativeOnInitialized() override; 	
-	
-	//UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
-	//class UTextBlock* InfoText;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UListView* OnlineList;
