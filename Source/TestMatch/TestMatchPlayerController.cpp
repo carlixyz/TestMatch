@@ -8,6 +8,8 @@
 #include "TestMatchCharacter.h"
 #include "Engine/World.h"
 #include "Components/SocialComponent.h"
+#include "GameFramework/Character.h"
+//#include "TestMatchCharacter.h"
 
 ATestMatchPlayerController::ATestMatchPlayerController()
 {
@@ -59,6 +61,7 @@ void ATestMatchPlayerController::SetupInputComponent()
 	Super::SetupInputComponent();
 
 	// ...
+	InputComponent->BindAction("Jump", IE_Pressed, this, &ATestMatchPlayerController::OnJumpPressed);
 
 	InputComponent->BindAction("SetDestination", IE_Pressed, this, &ATestMatchPlayerController::OnSetDestinationPressed);
 	InputComponent->BindAction("SetDestination", IE_Released, this, &ATestMatchPlayerController::OnSetDestinationReleased);
@@ -67,6 +70,11 @@ void ATestMatchPlayerController::SetupInputComponent()
 	InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &ATestMatchPlayerController::OnTouchPressed);
 	InputComponent->BindTouch(EInputEvent::IE_Released, this, &ATestMatchPlayerController::OnTouchReleased);
 
+}
+
+void ATestMatchPlayerController::OnJumpPressed()
+{
+	GetCharacter()->Jump();
 }
 
 void ATestMatchPlayerController::OnSetDestinationPressed()

@@ -40,6 +40,7 @@ protected:
 	// End PlayerController interface
 
 	/** Input handlers for SetDestination action. */
+	void OnJumpPressed();
 	void OnSetDestinationPressed();
 	void OnSetDestinationReleased();
 	void OnTouchPressed(const ETouchIndex::Type FingerIndex, const FVector Location);
