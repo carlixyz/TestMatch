@@ -18,28 +18,34 @@ protected:
 	/// Initialize Class to enable IUserObjectListEntry
 	virtual void NativeOnListItemObjectSet(UObject* listItemObject) override;
 
+	// Extend your custom implementation by BluPrint here
+	UFUNCTION(BlueprintNativeEvent)
 	void SetupWidgetOffline();
 
+	// Extend your custom implementation by BluPrint here
+	UFUNCTION(BlueprintNativeEvent)
 	void SetupWidgetOnline();
 
+	// Our current tooltip widget class, change it from here
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class UFriendProfileTooltip> TooltipUIClass;
 
+	// Our current tooltip widget, peek instance from here
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UFriendProfileTooltip* ProfileTooltip;
 
 	void CreateTooltipWidget(class UFriendData* friendData);
 
 	/// Player Avatar Icon ------------------
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(meta = (BindWidgetOptional))
 	class UImage* AvatarImage;
 
 	/// Player NickName ---------------------
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(meta = (BindWidgetOptional))
 	class UTextBlock* NickNameText;
 
 	/// Player Connection Status 
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(meta = (BindWidgetOptional))
 	UTextBlock* Connection;
 
 	// Displayed Text Color When online
@@ -52,7 +58,7 @@ protected:
 
 
 	/// Back of the panel color -----------
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(meta = (BindWidgetOptional))
 	class UBorder* BorderBG;
 
 	// Displayed Color When enabled

@@ -49,6 +49,21 @@ public:
 	UFUNCTION()
 	void UpdateFriendWidgets(class UFriendData* friendsData);
 
+	// Implement these in BP if you want some animation
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnOnlineListUnfold();
+
+	// Implement these in BP if you want some animation
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnOnlineListFold();
+
+	// Implement these in BP if you want some animation
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnOfflineListUnfold();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnOfflineListFold();
+
 private:
 
 	void InitListViewData(TArray<UFriendData*> friendsDataList);

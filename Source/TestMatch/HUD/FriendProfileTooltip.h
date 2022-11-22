@@ -34,9 +34,6 @@ protected:
 	UTextBlock* LastGame;
 
 public:
-	UFUNCTION(BlueprintCallable)
-	UFriendProfileTooltip* ReturnTooltip();
-
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintNativeEvent)
 	void UpdateTooltipData(class UFriendData* friendProfile);
 };

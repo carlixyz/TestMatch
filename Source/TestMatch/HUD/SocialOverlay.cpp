@@ -116,9 +116,11 @@ void USocialOverlay::ToggleOnlineListVisibility()
 	switch (OnlineList->GetVisibility())
 	{
 	case ESlateVisibility::Visible:
+		OnOnlineListUnfold();
 		OnlineList->SetVisibility(ESlateVisibility::Collapsed);
 		break;
 	case ESlateVisibility::Collapsed:
+		OnOnlineListFold();
 		OnlineList->SetVisibility(ESlateVisibility::Visible);
 		break;
 	}
@@ -131,10 +133,12 @@ void USocialOverlay::ToggleOfflineListVisibility()
 	switch (OfflineList->GetVisibility())
 	{
 		case ESlateVisibility::Visible:
+			OnOfflineListFold();
 			OfflineList->SetVisibility(ESlateVisibility::Collapsed);
 		break;
 
 		case ESlateVisibility::Collapsed:
+			OnOfflineListUnfold();
 			OfflineList->SetVisibility(ESlateVisibility::Visible);
 		break;
 	}

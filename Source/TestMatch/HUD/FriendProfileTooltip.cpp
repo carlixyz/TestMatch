@@ -6,12 +6,7 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 
-UFriendProfileTooltip* UFriendProfileTooltip::ReturnTooltip()
-{
-	return this;
-}
-
-void UFriendProfileTooltip::UpdateTooltipData(UFriendData* friendProfile)
+void UFriendProfileTooltip::UpdateTooltipData_Implementation(UFriendData* friendProfile)
 {
 	if (friendProfile != nullptr)
 	{

@@ -58,7 +58,7 @@ Using (for now) 3 components:
 - [x] 10> ~~Check the implementation of a local basic pool of widgets in case of not using the listviews. **12H?**~~
 
 
-- [ ] 11> Make sure that key parts are handled on native side C++ and expose events to BP’s to handle tasks that technical artist should work later. **6~12H?**
+- [x] 11> ~~Make sure that key parts are handled on native side C++ and expose events to BP’s to handle tasks that technical artist should work later. **6~12H?**~~
 
 
 - [x] 12> ~~Avoid direct View – model communication skipping the control class.~~

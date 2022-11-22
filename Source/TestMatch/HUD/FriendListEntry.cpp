@@ -39,7 +39,7 @@ void UFriendListEntry::NativeOnListItemObjectSet(UObject* listItemObject)
 	}
 }
 
-void UFriendListEntry::SetupWidgetOffline()
+void UFriendListEntry::SetupWidgetOffline_Implementation()
 {
 	AvatarImage->SetBrushTintColor(OfflineColorBG);
 	NickNameText->SetColorAndOpacity(FSlateColor(OfflineColorFont));
@@ -50,7 +50,7 @@ void UFriendListEntry::SetupWidgetOffline()
 	BorderBG->SetBrushColor(OfflineColorBG);
 }
 
-void UFriendListEntry::SetupWidgetOnline()
+void UFriendListEntry::SetupWidgetOnline_Implementation()
 {
 	AvatarImage->SetBrushTintColor(FSlateColor(FLinearColor::White));
 	NickNameText->SetColorAndOpacity(FSlateColor(OnlineColorFont));

@@ -6,7 +6,7 @@
 #include "TimerManager.h"
 
 
-void UToastPopup::SetupDisplayedName(FString nameToDisplay)
+void UToastPopup::SetupDisplayedName_Implementation(const FString& nameToDisplay)
 {
 	if (RevealWindow)
 		PlayAnimation(RevealWindow);
@@ -14,16 +14,20 @@ void UToastPopup::SetupDisplayedName(FString nameToDisplay)
 	if (AnnounceText)
 		AnnounceText->SetText(FText::FromString(nameToDisplay));
 
+	LaunchDelayToHide();
 
+	if (HideWindow)
+		PlayAnimation(HideWindow, .0f, 1, EUMGSequencePlayMode::Forward, .5f );
+}
+
+void UToastPopup::LaunchDelayToHide()
+{
 	/// We Show this info and after a while close it ...
 	GetWorld()->GetTimerManager().SetTimer(DisplayTimer,
 										   this,
 										   &UToastPopup::GoodBye,
 										   DisplayDelay,
 										   false);
-
-	if (HideWindow)
-		PlayAnimation(HideWindow, .0f, 1, EUMGSequencePlayMode::Forward, .5f );
 }
 
 void UToastPopup::GoodBye()
@@ -31,4 +35,3 @@ void UToastPopup::GoodBye()
 	RemoveFromParent();
 	//ConditionalBeginDestroy();
 }
-
